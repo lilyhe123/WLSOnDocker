@@ -45,7 +45,7 @@ visit 'http://localhost:7001' in browser in your host machine to check status of
 ### run jms client to send/receive msg from jms queue
 enter one of the WLS servers and run jms client program
 
-  $ docker exec -it <containerId> /bin/bash
+  $ docker exec -it containerId /bin/bash
 
   $ . /u01/oracle/wlserver/server/bin/setWLSEnv.sh
   
