@@ -4,7 +4,7 @@ Dockerfile and compose file to run WLS Cluster Domain
 
 ## How to build and run
 
-You need to first download weblogic 12.2.1 distribution and put it in this folder with name like fmw_12.2.1.*wls*.jar.
+You need to first download weblogic 12.2.1 distribution and put it in this folder with name like fmw_12.2.1.wls*.jar.
 
 ### build jdk8 image 
 as base image to run WLS server
