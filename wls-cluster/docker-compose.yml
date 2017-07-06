@@ -1,0 +1,60 @@
+version: '3'
+services:
+  wlslease:
+    image: mysql:5.7
+    volumes:
+      - /Users/lilyhe/prj/imageData/wlsData:/var/lib/mysql
+    ports:
+      - "3310:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234qwer
+      MYSQL_DATABASE: wlsdb
+
+  admin:
+    image: jdk8:latest
+    volumes:
+      - orace-home:/u01/oracle 
+      - domain-home:/u01/mydomain
+      - filestore-data:/u01/stores
+    ports:
+      - "7001:7001"
+    command: /u01/mydomain/startWebLogic.sh
+
+  m1:
+    image: jdk8:latest
+    volumes:
+      - orace-home:/u01/oracle 
+      - domain-home:/u01/mydomain
+      - filestore-data:/u01/stores
+    environment:
+      ORACLE_HOME: /u01/oracle
+      DOMAIN_HOME: /u01/mydomain
+    depends_on:
+      - admin
+      - wlslease
+    command: /u01/mydomain/startMS.sh ms1
+
+  m2:
+    image: jdk8:latest
+    volumes:
+      - orace-home:/u01/oracle 
+      - domain-home:/u01/mydomain
+      - filestore-data:/u01/stores
+    environment:
+      ORACLE_HOME: /u01/oracle
+      DOMAIN_HOME: /u01/mydomain
+    depends_on:
+      - admin
+      - wlslease
+    command: /u01/mydomain/startMS.sh ms2
+
+volumes:
+  orace-home:
+    external: true
+  domain-home:
+    external: true
+  filestore-data:
+    external: true
+
+  
+
