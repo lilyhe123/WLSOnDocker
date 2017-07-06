@@ -6,7 +6,7 @@ ENV INSTALL_DIR=/install \
 	http_proxy=cn-proxy.jp.oracle.com:80 \
 	https_proxy=cn-proxy.jp.oracle.com:80 \
 	JAVA_PKG=server-jre-8u*-linux-x64.tar.gz \
-    JAVA_HOME=/usr/java/default \
+    JAVA_HOME=/usr/java/default
 
 # install java
 # ------------------------------------------------------------  
