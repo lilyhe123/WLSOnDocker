@@ -6,4 +6,4 @@ You need to first download Oracle Server JRE binary in this directory with name 
 
 To build this image in this folder run:
 
-$ dc build -t jdk8 .
+$ docker build -t jdk8 .
