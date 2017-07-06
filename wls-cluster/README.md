@@ -18,7 +18,7 @@ This data volume container creates three local volumes:
 #### build and run
   1. build image with installed weblogic
    
-    $ dc build -t wls .
+    $ docker build -t wls .
    
   2. run to create a weblogic domain with cluster and create three named data volume
     
