@@ -11,9 +11,9 @@ as base image to run WLS server
 
 ### prepare data-only container 
 This data volume container creates three local volumes: 
- * oracle home directories
- * domain directories
- * directories of file store data
+ * oracle home directory
+ * domain directory
+ * directory of file store data
 
 #### build and run
   1. build image with installed weblogic
