@@ -1,4 +1,5 @@
 #!/bin/bash
+# author Lily He
 
 folder="$DOMAIN_HOME/config"
 if [ -d "$folder" ]
