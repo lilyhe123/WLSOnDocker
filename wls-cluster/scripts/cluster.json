@@ -1,0 +1,64 @@
+{ "resources": {
+   	"m1": {
+	    "url": "machines",
+	    "data": {
+	      "name": "m1"
+	    }
+    },
+
+    "m2": {
+	    "url": "machines",
+	    "data": {
+	      "name": "m2"
+	    }
+    },
+
+    "myCluster": {
+	    "url": "clusters",
+	    "data": {
+		  "migrationBasis": "database",
+		  "clusterMessagingMode": "unicast",
+		  "name": "myCluster"
+		}
+    },
+
+    "ds1": {
+	    "url": "JDBCSystemResources",
+	    "data": {
+		  "targets":[{
+		              "identity":["clusters", "myCluster"]
+		            }],
+		  "descriptorFileName": "jdbc/ds1-jdbc.xml",
+		  "name": "ds1"
+		}
+    },
+
+    "updateCluster": {
+	    "url": "clusters/myCluster",
+	    "data": {
+		  "dataSourceForAutomaticMigration": ["JDBCSystemResources", "ds1"]
+		}
+    },
+
+    "ms1": {
+	    "url": "servers",
+	    "data": {
+		  "listenPort": 8003,
+		  "listenAddress": "",
+		  "cluster": ["clusters", "myCluster"],
+		  "machine": ["machines", "m1"],
+		  "name": "ms1"
+		}
+    },
+  
+    "ms2": {
+	    "url": "servers",
+	    "data": {
+		  "listenPort": 8005,
+		  "listenAddress": "",
+		  "cluster": ["clusters", "myCluster"],
+		  "machine": ["machines", "m2"],
+		  "name": "ms2"
+		}
+    }
+}}

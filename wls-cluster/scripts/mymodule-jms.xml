@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<weblogic-jms xmlns="http://xmlns.oracle.com/weblogic/weblogic-jms" xmlns:sec="http://xmlns.oracle.com/weblogic/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wls="http://xmlns.oracle.com/weblogic/security/wls" xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-jms http://xmlns.oracle.com/weblogic/weblogic-jms/1.1/weblogic-jms.xsd">
+  <connection-factory name="cf1">
+    <default-targeting-enabled>true</default-targeting-enabled>
+    <jndi-name>cf1</jndi-name>
+    <client-params>
+      <client-id-policy>Restricted</client-id-policy>
+      <subscription-sharing-policy>Exclusive</subscription-sharing-policy>
+      <messages-maximum>10</messages-maximum>
+    </client-params>
+    <transaction-params>
+      <xa-connection-factory-enabled>true</xa-connection-factory-enabled>
+    </transaction-params>
+    <security-params>
+      <attach-jmsx-user-id>false</attach-jmsx-user-id>
+      <security-policy>ThreadBased</security-policy>
+    </security-params>
+  </connection-factory>
+  <queue name="queue1">
+    <sub-deployment-name>sub1</sub-deployment-name>
+    <jndi-name>queue1</jndi-name>
+  </queue>
+  <uniform-distributed-queue name="dq1">
+    <sub-deployment-name>sub2</sub-deployment-name>
+    <jndi-name>dq1</jndi-name>
+    <unit-of-work-handling-policy>PassThrough</unit-of-work-handling-policy>
+    <unit-of-order-routing>Hash</unit-of-order-routing>
+    <forward-delay>-1</forward-delay>
+  </uniform-distributed-queue>
+</weblogic-jms>

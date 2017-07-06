@@ -1,0 +1,93 @@
+{"resources": {
+  "file1": {
+    "url": "fileStores",
+    "data": {
+      "name": "filestore1",
+      "directory": "/u01/stores/filestore1",
+      "distributionPolicy": "Singleton",
+      "numberOfRestartAttempts": 3,
+      "migrationPolicy": "Always",
+      "secondsBetweenRestarts": 15,
+      "restartInPlace": false,
+      "targets": [{
+                 "identity":["clusters", "myCluster"]
+                }]
+    }
+  },
+
+  "file2": {
+    "url": "fileStores",
+    "data": {
+      "name": "filestore2",
+      "directory": "/u01/stores/filestore2",
+      "distributionPolicy": "Distributed",
+      "numberOfRestartAttempts": 3,
+      "migrationPolicy": "Always",
+      "secondsBetweenRestarts": 15,
+      "restartInPlace": false,
+      "targets": [{
+                 "identity":["clusters", "myCluster"]
+                }]
+    }
+  },
+
+  "jms1": {
+    "url": "JMSServers",
+    "data": {
+      "messagesThresholdHigh": -1,
+      "targets": [{
+                   "identity":["clusters", "myCluster"]
+                  }],
+      "persistentStore": [
+         "fileStores",
+         "filestore1"
+        ],
+      "name": "jmsserver1"
+    }
+  },
+
+  "jms2": {
+    "url": "JMSServers",
+    "data": {
+      "messagesThresholdHigh": -1,
+      "targets": [{
+                   "identity":["clusters", "myCluster"]
+                  }],
+      "persistentStore": [
+         "fileStores",
+         "filestore2"
+        ],
+      "name": "jmsserver2"
+    }
+  },
+
+  "module": {
+    "url": "JMSSystemResources",
+    "data": {
+      "name": "mymodule",
+      "targets":[{
+                  "identity": [ "clusters", "myCluster" ]
+                }]
+    }
+  },
+
+  "sub1": {
+    "url": "JMSSystemResources/mymodule/subDeployments",
+    "data": {
+      "name": "sub1",
+      "targets":[{
+                  "identity": [ "JMSServers", "jmsserver1" ]
+                }]
+    }
+  },
+
+  "sub2": {
+    "url": "JMSSystemResources/mymodule/subDeployments",
+    "data": {
+      "name": "sub2",
+      "targets":[{
+                  "identity": [ "JMSServers", "jmsserver2" ]
+                }]
+    }
+  }
+}}
