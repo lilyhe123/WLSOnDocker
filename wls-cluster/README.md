@@ -43,9 +43,11 @@ This aplication contains four services and the three WLS servers use data volume
 visit 'http://localhost:7001' in browser in your host machine to check status of servers and resources
 
 ### run jms client to send/receive msg from jms queue
-enter one of the WLS servers and run jms client program
+enter container of one WLS servers:
 
   $ docker exec -it containerId /bin/bash
+  
+run jms client programs in the container: 
 
   $ . /u01/oracle/wlserver/server/bin/setWLSEnv.sh
   
@@ -56,7 +58,9 @@ enter one of the WLS servers and run jms client program
   $ java samples.QueueReceive
 
 ### cleanup
-* remove all stopped containers (make sure that’s what you want before you do)
+make sure that’s what you want before you do
+
+* remove all stopped containers
 
   $ docker rm $(docker ps -a -q)
 
