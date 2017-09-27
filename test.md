@@ -11,7 +11,6 @@ This demo creates wls domain running in k8s with a admin server, several ms and 
 Pls follow steps below to run this demo. This may only work on hostlinux. I didn't try this on Mac.
 
 ### Get wls docker image
-
 #### pull the regularly built resiliency image
 ```
 $ docker pull wlsldi-v2.docker.oraclecorp.com/weblogic-12.2.1.3-resiliency-sudossh:latest
@@ -21,19 +20,19 @@ $ docker pull wlsldi-v2.docker.oraclecorp.com/weblogic-12.2.1.3-resiliency-sudos
 $ docker tag wlsldi-v2.docker.oraclecorp.com/weblogic-12.2.1.3-resiliency-sudossh:latest weblogic-12.2.1.3-developer:latest
 ```
 
-#### Make sure your kubernetes environment is started and ready
+### Make sure your kubernetes environment is started and ready
 See: //depot/dev/wls-k8s/infra/install_docker_k8s.sh
 
-#### Prepare volume folders and update k8s/volumes.yml accordingly
+### Prepare volume folders and update k8s/volumes.yml accordingly
 * create three empty folders with names 'v1', 'v2', 'v3' under /scratch/<uid>/vdata
 * update values of volume path in k8s/volumes.yml accordingly: find 'scratch/lihhe/vdata/v*' and change to 'scratch/<uid>/vdata/v*'
    
-#### Run autorun.sh which includes following steps
+### Run autorun.sh which includes following steps
 * deploy all the resources to k8s, including persistent volumes, mysql server, admin server, managed servers.
 * wait until all pods/services are ready in K8s and all WLS resources are ready in wls domain.
 * run jms client to send msgs to jms queue and verify the sending succeed.
 
-#### After run you'll get following resources deployed to k8s
+### After run you'll get following resources deployed to k8s
 ```
 $ kubectl get all
 NAME                                   READY     STATUS    RESTARTS   AGE
@@ -60,7 +59,7 @@ NAME                             DESIRED   CURRENT   READY     AGE
 rs/jms-admin-server-1908067799   1         1         1         5m
 rs/mysql-server-1005119867       1         1         1         5m
 ```
-#### check persistent volumes
+### check persistent volumes
 ```
 $ kubectl get pv
 NAME      CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS    CLAIM                         STORAGECLASS   REASON    AGE
