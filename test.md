@@ -5,7 +5,12 @@ This demo creates wls domain running in k8s with a admin server, several ms and 
 * Persistent volumes are used for mysql data folder, domain home and file store folder.
 * Domain is provisioned on the fly via REST api after admin server starts. And managed servers share the same domain home via volume, so no need to create domain image.
 * The domain has file stores, jms servers and jms destinations deployed to cluster.
-* It has jms clients to send/receive msgs.
+* The domain has one servlet web app and mdb app deployed to cluster
+* It has standalone jms clients to send/receive msgs.
+
+The domain has thorough jms resources defined: 
+* one file store with singleton mode targeted to cluster, one jms server targeted to this store and single queue&topic targeted to the jmsserver
+* one file store with distributed mode targeted to cluster, one jms server targeted to this store and distributed queue&topic targeted to the jmsserver
 
 ## Steps to run
 Pls follow steps below to run this demo. This may only work on hostlinux. I didn't try this on Mac.
@@ -15,7 +20,7 @@ Pls follow steps below to run this demo. This may only work on hostlinux. I didn
 ```
 $ docker pull wlsldi-v2.docker.oraclecorp.com/weblogic-12.2.1.3-resiliency-sudossh:latest
 ```
-#### tag it with developer:latest to be able to build summercamp
+#### tag it with developer:latest
 ```
 $ docker tag wlsldi-v2.docker.oraclecorp.com/weblogic-12.2.1.3-resiliency-sudossh:latest weblogic-12.2.1.3-developer:latest
 ```
@@ -28,9 +33,10 @@ See: //depot/dev/wls-k8s/infra/install_docker_k8s.sh
 * update values of volume path in k8s/volumes.yml accordingly: find 'scratch/lihhe/vdata/v*' and change to 'scratch/<uid>/vdata/v*'
    
 ### Run autorun.sh which includes following steps
-* deploy all the resources to k8s, including persistent volumes, mysql server, admin server, managed servers.
-* wait until all pods/services are ready in K8s and all WLS resources are ready in wls domain.
-* run jms client to send msgs to jms queue and verify the sending succeed.
+* deploy all the resources to k8s, including persistent volumes, mysql server, admin server, managed servers
+* wait until all pods/services are ready in K8s and all WLS resources are ready in wls domain
+* auto deploy a servlet webapp and mdb app to cluster
+* run jms client to send msgs to jms destinations
 
 ### After run you'll get following resources deployed to k8s
 ```
