@@ -29,7 +29,7 @@ Or you can run k8s/deploy.sh to deploy all the resources in one command.
 
 4. Check resources deployed to k8s
 
-4.1 Check pods and controllers etc
+Check pods and controllers etc
 ```
 $ kubectl get all
 NAME                               READY     STATUS    RESTARTS   AGE
@@ -54,9 +54,7 @@ rs/admin-server-1238998015   1         1         1         11m
 
 ```
 
-4.2 Check pv and pvc
-
-We have three pv defined and two pvc defined. One pv is reserved for later use
+Check pv and pvc
 ```
 $ kubectl get pv
 NAME      CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM                    STORAGECLASS   REASON    AGE
@@ -69,8 +67,9 @@ NAME             STATUS    VOLUME    CAPACITY   ACCESSMODES   STORAGECLASS   AGE
 wlserver-pvc-1   Bound     pv2       10Gi       RWX           manual         18m
 wlserver-pvc-2   Bound     pv3       10Gi       RWX           manual         18m
 ```
+We have three pv defined and two pvc defined. One pv is reserved for later use.
 
-4.3 Check secrets
+Check secrets
 ```
 $ kubectl get secrets
 NAME                  TYPE                                  DATA      AGE
