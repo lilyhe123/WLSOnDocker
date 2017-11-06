@@ -14,7 +14,6 @@ $ docker build -t wls-installer .
 ```
 
 ### 2. Prepare volume directories
-
 Three volumes are defined in k8s/pv.yml which refer to three external directories. You can choose to use host paths or shared NFS directories. Please change the paths accordingly. The external directories need to be initially empty.
    
 ### 3. Deploy all the k8s resources
@@ -28,8 +27,7 @@ $ kubectl create -f  k8s/wls-stateful.yml
 Or you can run k8s/deploy.sh to deploy all the resources in one command.
 
 ### 4. Check resources deployed to k8s
-
-#### 4.1 Check pods and controllers etc
+#### 4.1 check pods and controllers etc
 ```
 $ kubectl get all
 NAME                               READY     STATUS    RESTARTS   AGE
@@ -54,7 +52,7 @@ rs/admin-server-1238998015   1         1         1         11m
 
 ```
 
-#### 4.2 Check pv and pvc
+#### 4.2 check pv and pvc
 ```
 $ kubectl get pv
 NAME      CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM                    STORAGECLASS   REASON    AGE
@@ -69,7 +67,7 @@ wlserver-pvc-2   Bound     pv3       10Gi       RWX           manual         18m
 ```
 We have three pv defined and two pvc defined. One pv is reserved for later use.
 
-#### 4.3 Check secrets
+#### 4.3 check secrets
 ```
 $ kubectl get secrets
 NAME                  TYPE                                  DATA      AGE
@@ -93,12 +91,12 @@ $ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/AdminServer/lo
 ```
 
 ### 7. Restart all pods
-#### 7.1 Shutdown the managed servers' pods gracefully
+#### 7.1 shutdown the managed servers' pods gracefully
 ```
 $ kubectl exec -it managed-server-0 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-0 t3://admin-server:8001
 $ kubectl exec -it managed-server-1 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-1 t3://admin-server:8001
 ```
-#### 7.2 Shutdown the admin server pod gracefully
+#### 7.2 shutdown the admin server pod gracefully
 
 First we need to gracefully shutdown admin server process. Note you need to replace $adminPod with the real admin server pod name.
 ```
