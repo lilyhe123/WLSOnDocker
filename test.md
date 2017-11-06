@@ -75,10 +75,11 @@ default-token-m93m1   kubernetes.io/service-account-token   3         39d
 wlsecret              Opaque                                2         19m
 ```
 
-### 5. Go to admin console to check server status
+### 5. Check Weblogic server status via admin console
 The admin console URL is 'http://[hostIP]:30007/console' and the user/pwd are weblogic/weblogic1.
 
 ### 6. Troubleshooting
+You can trace WebLogic server output and logs for troubleshooting.
 Trace WebLogic server output. Note you need to replace $serverPod with the actual pod name of a WebLogic server.
 ```
 $ kubectl logs -f $serverPod
