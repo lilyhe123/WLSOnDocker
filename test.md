@@ -122,4 +122,5 @@ $ kubectl delete -f k8s/secrets.yml
 Or you can run clean.sh to do the cleanup in one command.
 And then delete all files under volume directories via `rm -rf *` to clean up all persistent data.
 
-##COPYRIGHT Copyright (c) 2014-2017 Oracle and/or its affiliates. All rights reserved.
+## COPYRIGHT 
+Copyright (c) 2014-2017 Oracle and/or its affiliates. All rights reserved.
