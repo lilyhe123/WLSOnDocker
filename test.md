@@ -28,7 +28,8 @@ $ kubectl create -f  k8s/wls-stateful.yml
 Or you can run k8s/deploy.sh to deploy all the resources in one command.
 
 4. Check resources deployed to k8s
-### Check pods and controllers etc
+
+4.1 Check pods and controllers etc
 ```
 $ kubectl get all
 NAME                               READY     STATUS    RESTARTS   AGE
@@ -53,7 +54,8 @@ rs/admin-server-1238998015   1         1         1         11m
 
 ```
 
-### Check pv and pvc
+4.2 Check pv and pvc
+
 We have three pv defined and two pvc defined. One pv is reserved for later use
 ```
 $ kubectl get pv
@@ -68,7 +70,7 @@ wlserver-pvc-1   Bound     pv2       10Gi       RWX           manual         18m
 wlserver-pvc-2   Bound     pv3       10Gi       RWX           manual         18m
 ```
 
-### Check secrets
+4.3 Check secrets
 ```
 $ kubectl get secrets
 NAME                  TYPE                                  DATA      AGE
@@ -92,12 +94,13 @@ $ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/AdminServer/lo
 ```
 
 7. Restart all pods
-#### Shutdown the managed servers' pods gracefully
+7.1 Shutdown the managed servers' pods gracefully
 ```
 $ kubectl exec -it managed-server-0 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-0 t3://admin-server:8001
 $ kubectl exec -it managed-server-1 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-1 t3://admin-server:8001
 ```
-#### Shutdown the admin server pod gracefully
+7.2 Shutdown the admin server pod gracefully
+
 First we need to gracefully shutdown admin server process. Note you need to replace $adminPod with the real admin server pod name.
 ```
 $ kubectl exec -it $adminPod -- /u01/wlsdomain/bin/stopWebLogic.sh weblogic weblogic1 t3://localhost:8001
