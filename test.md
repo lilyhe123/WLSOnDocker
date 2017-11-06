@@ -14,6 +14,7 @@ $ docker build -t wls-installer .
 ```
 
 2. Prepare volume directories
+
 Three volumes are defined in k8s/pv.yml which refer to three external directories. You can choose to use host paths or shared NFS directories. Please change the paths accordingly. The external directories need to be initially empty.
    
 3. Deploy all the k8s resources
