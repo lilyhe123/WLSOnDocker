@@ -1,26 +1,20 @@
-## prerequisites
-You need to have a Kubernetes cluster up and running with kubectl installed
+WebLogic Sample on Kubernetes with Shared Domain Home
+=========================================
+This sample extends the Oracle WebLogic developer install image by creating a sample WLS 12.2.1.3 domain and cluster to run in Kubernetes. The WebLogic domain consists of an Admin server and one or more Managed servers running in a WebLogic cluster. And all the WebLogic servers are shared the same domain home which is stored in an external volume.
 
-## steps to run
+## Prerequisites
+1. You need to have a Kubernetes cluster up and running with kubectl installed.
+2. You have built oracle/weblogic:12.2.1.3-developer image locally based on Dockerfile and scripts here: https://github.com/oracle/docker-images/tree/master/OracleWebLogic/dockerfiles/12.2.1.3/
 
-### get wls 12.2.1.3 docker image
+## How to Build and Run
 
-#### pull the regularly built resiliency image
-```
-$ docker pull wlsldi-v2.docker.oraclecorp.com/weblogic-12.2.1.3-resiliency-sudossh:latest
-```
-#### tag it with developer:latest
-```
-$ docker tag wlsldi-v2.docker.oraclecorp.com/weblogic-12.2.1.3-resiliency-sudossh:latest weblogic-12.2.1.3-developer:latest
-```
-
-### build local wls image
+1. build the WebLogic image wls-installer for this sample domain
 ```
 $ docker build -t wls-installer .
 ```
 
 ### prepare volume directories
-Three volumes are defined in k8s/pv.yml which refer to three external directories. You can use host paths or shared NFS directories. Pls change the paths accordingly.
+Three volumes are defined in k8s/pv.yml which refer to three external directories. You can choose to use host paths or shared NFS directories. Please change the paths accordingly. The external directories need to be initially empty.
    
 ### deploy all the k8s resources
 ```
@@ -31,7 +25,7 @@ $ kubectl create -f  k8s/wls-admin.yml
 $ kubectl create -f  k8s/wls-stateful.yml
 ```
 
-### check resources deployed to k8s after all the deployments finish
+### check resources deployed to k8s
 ```
 $ kubectl get all
 NAME                               READY     STATUS    RESTARTS   AGE
@@ -80,7 +74,46 @@ wlsecret              Opaque                                2         19m
 ```
 
 ### go to admin console to check server status
-The admin console usl is 'http://[hostIP]:30007/console' and the user/pwd are weblogic/weblogic1.
- 
-### restart all pods
+The admin console URL is 'http://[hostIP]:30007/console' and the user/pwd are weblogic/weblogic1.
 
+### troubleshooting
+Trace WebLogic server output. Note you need to replace $serverPod with the actual pod name of a WebLogic server.
+```
+$ kubectl logs -f $serverPod
+```
+Trace WebLogic server logs. Since the domain home is shared by all WebLogic server, you can trace all servers' logs in any one server pod.
+```
+$ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/managed-server-0/logs/managed-server-0.log
+$ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/managed-server-1/logs/managed-server-1.log
+$ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/AdminServer/logs/AdminServer.log
+```
+
+### restart all pods
+#### shutdown the managed servers' pods gracefully
+```
+$ kubectl exec -it managed-server-0 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-0 t3://admin-server:8001
+$ kubectl exec -it managed-server-1 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-1 t3://admin-server:8001
+```
+#### shutdown the admin server pod gracefully
+First we need to gracefully shutdown admin server process. Note you need to replace $adminPod with the real admin server pod name.
+```
+$ kubectl exec -it $adminPod -- /u01/wlsdomain/bin/stopWebLogic.sh weblogic weblogic1 t3://localhost:8001
+```
+Then kill the main process in admin server container/pod which run `tail -f /u01/wlsdomain/admin.out`.
+```
+$ kubectl exec -it $adminPod bash
+  >  ps -ef | grep tail | kill -9 $(awk '{print $2}')
+  > exit
+```
+After the pods are stopped, each pod's corresponding controller is responsible for restarting the pods automatically.
+Wait until all pods are running and ready again. Monitor status of pods via `kubectl get pod`
+
+### cleanup
+```
+$ kubectl delete -f k8s/wls-stateful.yml
+$ kubectl delete -f k8s/wls-admin.yml
+$ kubectl delete -f k8s/pvc.yml
+$ kubectl delete -f k8s/pv.yml
+$ kubectl delete -f k8s/secrets.yml
+```
+And then delete all files under volume directories via `rm -rf *` to clean up all persistent data.
