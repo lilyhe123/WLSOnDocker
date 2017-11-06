@@ -8,16 +8,16 @@ This sample extends the Oracle WebLogic developer install image by creating a sa
 
 ## How to Build and Run
 
-1. Build the WebLogic image wls-installer for this sample domain
+### 1. Build the WebLogic image wls-installer for this sample domain
 ```
 $ docker build -t wls-installer .
 ```
 
-2. Prepare volume directories
+### 2. Prepare volume directories
 
 Three volumes are defined in k8s/pv.yml which refer to three external directories. You can choose to use host paths or shared NFS directories. Please change the paths accordingly. The external directories need to be initially empty.
    
-3. Deploy all the k8s resources
+### 3. Deploy all the k8s resources
 ```
 $ kubectl create -f  k8s/secrets.yml 
 $ kubectl create -f  k8s/pv.yml 
@@ -27,9 +27,9 @@ $ kubectl create -f  k8s/wls-stateful.yml
 ```
 Or you can run k8s/deploy.sh to deploy all the resources in one command.
 
-4. Check resources deployed to k8s
+### 4. Check resources deployed to k8s
 
-Check pods and controllers etc
+#### 4.1 Check pods and controllers etc
 ```
 $ kubectl get all
 NAME                               READY     STATUS    RESTARTS   AGE
@@ -54,7 +54,7 @@ rs/admin-server-1238998015   1         1         1         11m
 
 ```
 
-Check pv and pvc
+#### 4.2 Check pv and pvc
 ```
 $ kubectl get pv
 NAME      CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM                    STORAGECLASS   REASON    AGE
@@ -69,7 +69,7 @@ wlserver-pvc-2   Bound     pv3       10Gi       RWX           manual         18m
 ```
 We have three pv defined and two pvc defined. One pv is reserved for later use.
 
-Check secrets
+#### 4.3 Check secrets
 ```
 $ kubectl get secrets
 NAME                  TYPE                                  DATA      AGE
@@ -77,10 +77,10 @@ default-token-m93m1   kubernetes.io/service-account-token   3         39d
 wlsecret              Opaque                                2         19m
 ```
 
-5. Go to admin console to check server status
+### 5. Go to admin console to check server status
 The admin console URL is 'http://[hostIP]:30007/console' and the user/pwd are weblogic/weblogic1.
 
-6. Troubleshooting
+### 6. Troubleshooting
 Trace WebLogic server output. Note you need to replace $serverPod with the actual pod name of a WebLogic server.
 ```
 $ kubectl logs -f $serverPod
@@ -92,13 +92,13 @@ $ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/managed-server
 $ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/AdminServer/logs/AdminServer.log
 ```
 
-7. Restart all pods
-7.1 Shutdown the managed servers' pods gracefully
+### 7. Restart all pods
+#### 7.1 Shutdown the managed servers' pods gracefully
 ```
 $ kubectl exec -it managed-server-0 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-0 t3://admin-server:8001
 $ kubectl exec -it managed-server-1 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-1 t3://admin-server:8001
 ```
-7.2 Shutdown the admin server pod gracefully
+#### 7.2 Shutdown the admin server pod gracefully
 
 First we need to gracefully shutdown admin server process. Note you need to replace $adminPod with the real admin server pod name.
 ```
@@ -113,7 +113,7 @@ $ kubectl exec -it $adminPod bash
 After the pods are stopped, each pod's corresponding controller is responsible for restarting the pods automatically.
 Wait until all pods are running and ready again. Monitor status of pods via `kubectl get pod`
 
-8. Cleanup
+### 8. Cleanup
 ```
 $ kubectl delete -f k8s/wls-stateful.yml
 $ kubectl delete -f k8s/wls-admin.yml
