@@ -24,7 +24,7 @@ $ kubectl create -f  k8s/pvc.yml
 $ kubectl create -f  k8s/wls-admin.yml
 $ kubectl create -f  k8s/wls-stateful.yml
 ```
-Or you can run k8s/deploy.sh to deploy all the resources in one command.
+Or you can run deploy.sh to deploy all the resources in one command.
 
 ### 4. Check resources deployed to k8s
 #### 4.1 check pods and controllers etc
@@ -110,7 +110,7 @@ $ kubectl exec -it $adminPod bash
   > exit
 ```
 After the pods are stopped, each pod's corresponding controller is responsible for restarting the pods automatically.
-Wait until all pods are running and ready again. Monitor status of pods via `kubectl get pod`
+Wait until all pods are running and ready again. Monitor status of pods via `kubectl get pod`.
 
 ### 8. Cleanup
 ```
