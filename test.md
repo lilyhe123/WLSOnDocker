@@ -8,11 +8,11 @@ This sample extends the Oracle WebLogic developer install image by creating a sa
 
 ## How to Build and Run
 
-### 1. Build the WebLogic image wls-installer for this sample domain
+### 1. Build the WebLogic image for this sample domain
 ```
 $ docker build -t wls-installer .
 ```
-
+Or you can run build.sh directly.
 ### 2. Prepare volume directories
 Three volumes are defined in k8s/pv.yml which refer to three external directories. You can choose to use host paths or shared NFS directories. Please change the paths accordingly. The external directories need to be initially empty.
    
