@@ -11,7 +11,8 @@ This sample extends the Oracle WebLogic developer install image by creating a sa
 ### 1. Build the WebLogic image for this sample domain
 Pre-steps before build the image:
 1. You need to download get-pip.py from https://bootstrap.pypa.io/get-pip.py and save it to folder 'container-scripts'.
-2. If you run the scripts behind a proxy, you need to set and unset http&https proxy in Dockerfile.
+2. If you run `docker build` behind a proxy, you need to set up http&https proxy in Dockerfile.
+
 Then build the image:
 ```
 $ docker build -t wls-installer .
@@ -20,6 +21,8 @@ Or you can run build.sh directly.
 
 ### 2. Prepare volume directories
 Three volumes are defined in k8s/pv.yml which refer to three external directories. You can choose to use host paths or shared NFS directories. Please change the paths accordingly. The external directories need to be initially empty.
+
+**NOTE:** The first two persistent volumes 'pv1' and 'pv2' are used by WebLogic server pods. All processes in WebLogic server pods are running with UID 1000 and GID 1000 by default, so proper permissions need to be set to these two volume directories to make sure that UID 1000 and/or GID 1000 have permission to read and write the volume directories.
    
 ### 3. Deploy all the k8s resources
 ```
