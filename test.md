@@ -1,6 +1,6 @@
 WebLogic Sample on Kubernetes with Shared Domain Home
 =========================================
-This sample extends the Oracle WebLogic developer install image by creating a sample WLS 12.2.1.3 domain and cluster to run in Kubernetes. The WebLogic domain consists of an Admin server and one or more Managed servers running in a WebLogic cluster. And all the WebLogic servers are shared the same domain home which is stored in an external volume.
+This sample extends the Oracle WebLogic developer install image by creating a sample WLS 12.2.1.3 domain and cluster to run in Kubernetes. The WebLogic domain consists of an Admininstrator Server and several Managed Servers running in a WebLogic cluster. All WebLogic servers share the same domain home which has been mapped to an external volume.
 
 ## Prerequisites
 1. You need to have a Kubernetes cluster up and running with kubectl installed.
@@ -8,10 +8,10 @@ This sample extends the Oracle WebLogic developer install image by creating a sa
 
 ## How to Build and Run
 
-### 1. Build the WebLogic image for this sample domain
+### 1. Build the WebLogic Image for This Sample Domain
 Pre-steps before build the image:
 1. You need to download get-pip.py from https://bootstrap.pypa.io/get-pip.py and save it to folder 'container-scripts'.
-2. If you run `docker build` behind a proxy, you need to set up http&https proxy in Dockerfile.
+2. If you run `docker build` behind a proxy, you need to set up http and https proxy in the Dockerfile.
 
 Then build the image:
 ```
@@ -19,12 +19,12 @@ $ docker build -t wls-installer .
 ```
 Or you can run build.sh directly.
 
-### 2. Prepare volume directories
+### 2. Prepare Volume Directories
 Three volumes are defined in k8s/pv.yml which refer to three external directories. You can choose to use host paths or shared NFS directories. Please change the paths accordingly. The external directories need to be initially empty.
 
-**NOTE:** The first two persistent volumes 'pv1' and 'pv2' are used by WebLogic server pods. All processes in WebLogic server pods are running with UID 1000 and GID 1000 by default, so proper permissions need to be set to these two volume directories to make sure that UID 1000 and/or GID 1000 have permission to read and write the volume directories.
-   
-### 3. Deploy all the k8s resources
+**NOTE:** The first two persistent volumes 'pv1' and 'pv2' will be used by WebLogic server pods. All processes in WebLogic server pods are running with UID 1000 and GID 1000 by default, so proper permissions need to be set to these two volume directories to make sure that UID 1000 or GID 1000 have permission to read and write the volume directories. The third persistent volume 'pv3' is reserved for later use. We assume that root user will be used to access this volume so no particular permission need to be set to the directory.  
+ 
+### 3. Deploy All the Kubernetes Resources
 ```
 $ kubectl create -f  k8s/secrets.yml 
 $ kubectl create -f  k8s/pv.yml 
@@ -34,8 +34,8 @@ $ kubectl create -f  k8s/wls-stateful.yml
 ```
 Or you can run deploy.sh to deploy all the resources in one command.
 
-### 4. Check resources deployed to k8s
-#### 4.1 check pods and controllers etc
+### 4. Check Resources Deployed to Kubernetes
+#### 4.1 Check Pods and Controllers
 ```
 $ kubectl get all
 NAME                               READY     STATUS    RESTARTS   AGE
@@ -60,7 +60,7 @@ rs/admin-server-1238998015   1         1         1         11m
 
 ```
 
-#### 4.2 check pv and pvc
+#### 4.2 Check PV and PVC
 ```
 $ kubectl get pv
 NAME      CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM                    STORAGECLASS   REASON    AGE
@@ -75,7 +75,7 @@ wlserver-pvc-2   Bound     pv3       10Gi       RWX           manual         18m
 ```
 We have three pv defined and two pvc defined. One pv is reserved for later use.
 
-#### 4.3 check secrets
+#### 4.3 Check Secrets
 ```
 $ kubectl get secrets
 NAME                  TYPE                                  DATA      AGE
@@ -83,7 +83,7 @@ default-token-m93m1   kubernetes.io/service-account-token   3         39d
 wlsecret              Opaque                                2         19m
 ```
 
-### 5. Check Weblogic server status via admin console
+### 5. Check Weblogic Server Status via Administrator Console
 The admin console URL is 'http://[hostIP]:30007/console' and the user/pwd are weblogic/weblogic1.
 
 ### 6. Troubleshooting
@@ -99,23 +99,20 @@ $ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/managed-server
 $ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/AdminServer/logs/AdminServer.log
 ```
 
-### 7. Restart all pods
-#### 7.1 shutdown the managed servers' pods gracefully
+### 7. Restart All Pods
+#### 7.1 Shutdown the Managed Servers' Pods Gracefully
 ```
 $ kubectl exec -it managed-server-0 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-0 t3://admin-server:8001
 $ kubectl exec -it managed-server-1 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh managed-server-1 t3://admin-server:8001
 ```
-#### 7.2 shutdown the admin server pod gracefully
-
-First we need to gracefully shutdown admin server process. Note you need to replace $adminPod with the real admin server pod name.
+#### 7.2 Shutdown the Administrator Server Pod Gracefully
+First gracefully shutdown admin server process. Note that you need to replace $adminPod with the real admin server pod name.
 ```
 $ kubectl exec -it $adminPod -- /u01/wlsdomain/bin/stopWebLogic.sh weblogic weblogic1 t3://localhost:8001
 ```
-Then kill the main process in admin server container/pod which run `tail -f /u01/wlsdomain/admin.out`.
+Next manually delete the admin pod.
 ```
-$ kubectl exec -it $adminPod bash
-  >  ps -ef | grep tail | kill -9 $(awk '{print $2}')
-  > exit
+$ kubectl delete pod/$adminPod
 ```
 After the pods are stopped, each pod's corresponding controller is responsible for restarting the pods automatically.
 Wait until all pods are running and ready again. Monitor status of pods via `kubectl get pod`.
@@ -129,8 +126,7 @@ $ kubectl delete -f k8s/pv.yml
 $ kubectl delete -f k8s/secrets.yml
 ```
 Or you can run clean.sh to do the cleanup in one command.
-
-And then clean up all data in volume directories via `rm -rf *`.
+Next clean up all data in volume directories via `rm -rf *`.
 
 ## COPYRIGHT 
 Copyright (c) 2014-2017 Oracle and/or its affiliates. All rights reserved.
