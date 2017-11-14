@@ -5,6 +5,13 @@ This sample extends the Oracle WebLogic developer install image by creating a sa
 ## Prerequisites
 1. You need to have a Kubernetes cluster up and running with kubectl installed.
 2. You have built oracle/weblogic:12.2.1.3-developer image locally based on Dockerfile and scripts here: https://github.com/oracle/docker-images/tree/master/OracleWebLogic/dockerfiles/12.2.1.3/
+3. Username/password for the WebLogic domain are stored in k8s/secrets.yml which is encoded by base64. The default value is weblogic/weblogic1.  
+If you want to customize it, first get the encoded data of your username/password via running
+```
+$ echo -n <username> | base64 
+$ echo -n <password> | base64
+```
+Next upate k8s/secrets.yml with the new encoded data.
 
 ## How to Build and Run
 
@@ -17,7 +24,7 @@ Then build the image:
 ```
 $ docker build -t wls-installer .
 ```
-Or you can run build.sh directly.
+Or you can build the image by running build.sh directly.
 
 ### 2. Prepare Volume Directories
 Three volumes are defined in k8s/pv.yml which refer to three external directories. You can choose to use host paths or shared NFS directories. Please change the paths accordingly. The external directories need to be initially empty.
@@ -32,7 +39,7 @@ $ kubectl create -f  k8s/pvc.yml
 $ kubectl create -f  k8s/wls-admin.yml
 $ kubectl create -f  k8s/wls-stateful.yml
 ```
-Or you can run deploy.sh to deploy all the resources in one command.
+Or you can deploy all the resources by running deploy.sh directly.
 
 ### 4. Check Resources Deployed to Kubernetes
 #### 4.1 Check Pods and Controllers
@@ -92,7 +99,7 @@ Trace WebLogic server output. Note you need to replace $serverPod with the actua
 ```
 $ kubectl logs -f $serverPod
 ```
-Trace WebLogic server logs. Since the domain home is shared by all WebLogic server, you can trace all servers' logs in any one server pod.
+You can look at the WebLogic server logs by running:
 ```
 $ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/managed-server-0/logs/managed-server-0.log
 $ kubectl exec managed-server-0 -- tail -f /u01/wlsdomain/servers/managed-server-1/logs/managed-server-1.log
@@ -125,7 +132,7 @@ $ kubectl delete -f k8s/pvc.yml
 $ kubectl delete -f k8s/pv.yml
 $ kubectl delete -f k8s/secrets.yml
 ```
-Or you can run clean.sh to do the cleanup in one command.
+Or you can cleanup your environment by running clean.sh directly.
 Next clean up all data in volume directories via `rm -rf *`.
 
 ## COPYRIGHT 
