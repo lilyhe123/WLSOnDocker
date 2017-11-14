@@ -5,13 +5,8 @@ This sample extends the Oracle WebLogic developer install image by creating a sa
 ## Prerequisites
 1. You need to have a Kubernetes cluster up and running with kubectl installed.
 2. You have built oracle/weblogic:12.2.1.3-developer image locally based on Dockerfile and scripts here: https://github.com/oracle/docker-images/tree/master/OracleWebLogic/dockerfiles/12.2.1.3/
-3. Username/password for the WebLogic domain are stored in k8s/secrets.yml which is encoded by base64. The default value is weblogic/weblogic1.  
-If you want to customize it, first get the encoded data of your username/password via running
-```
-$ echo -n <username> | base64 
-$ echo -n <password> | base64
-```
-Next upate k8s/secrets.yml with the new encoded data.
+3. Username/password for the WebLogic domain are stored in k8s/secrets.yml and they are encoded by base64. The default values are weblogic/weblogic1.  
+If you want to customize it, first get the encoded data of your username/password via running `echo -n <username> | base64` and `echo -n <password> | base64`. Next upate k8s/secrets.yml with the new encoded data.
 
 ## How to Build and Run
 
@@ -29,7 +24,7 @@ Or you can build the image by running build.sh directly.
 ### 2. Prepare Volume Directories
 Three volumes are defined in k8s/pv.yml which refer to three external directories. You can choose to use host paths or shared NFS directories. Please change the paths accordingly. The external directories need to be initially empty.
 
-**NOTE:** The first two persistent volumes 'pv1' and 'pv2' will be used by WebLogic server pods. All processes in WebLogic server pods are running with UID 1000 and GID 1000 by default, so proper permissions need to be set to these two volume directories to make sure that UID 1000 or GID 1000 have permission to read and write the volume directories. The third persistent volume 'pv3' is reserved for later use. We assume that root user will be used to access this volume so no particular permission need to be set to the directory.  
+**NOTE:** The first two persistent volumes 'pv1' and 'pv2' will be used by WebLogic server pods. All processes in WebLogic server pods are running with UID 1000 and GID 1000 by default, so proper permissions need to be set to these two external directories to make sure that UID 1000 or GID 1000 have permission to read and write the volume directories. The third persistent volume 'pv3' is reserved for later use. We assume that root user will be used to access this volume so no particular permission need to be set to the directory.  
  
 ### 3. Deploy All the Kubernetes Resources
 ```
@@ -91,7 +86,7 @@ wlsecret              Opaque                                2         19m
 ```
 
 ### 5. Check Weblogic Server Status via Administrator Console
-The admin console URL is 'http://[hostIP]:30007/console' and the user/pwd are weblogic/weblogic1.
+The admin console URL is 'http://[hostIP]:30007/console'.
 
 ### 6. Troubleshooting
 You can trace WebLogic server output and logs for troubleshooting.
@@ -115,7 +110,7 @@ $ kubectl exec -it managed-server-1 -- /u01/wlsdomain/bin/stopManagedWebLogic.sh
 #### 7.2 Shutdown the Administrator Server Pod Gracefully
 First gracefully shutdown admin server process. Note that you need to replace $adminPod with the real admin server pod name.
 ```
-$ kubectl exec -it $adminPod -- /u01/wlsdomain/bin/stopWebLogic.sh weblogic weblogic1 t3://localhost:8001
+$ kubectl exec -it $adminPod -- /u01/wlsdomain/bin/stopWebLogic.sh <username> <password> t3://localhost:8001
 ```
 Next manually delete the admin pod.
 ```
