@@ -2,7 +2,7 @@ WebLogic Sample on Kubernetes with Shared Domain Home
 =========================================
 This sample extends the Oracle WebLogic developer install image by creating a sample WLS 12.2.1.3 domain and cluster to run in Kubernetes. The WebLogic domain consists of an Admininstrator Server and several Managed Servers running in a WebLogic cluster. All WebLogic servers share the same domain home which has been mapped to an external volume.
 
-You can choose to create a WebLogic domain with no leasing or to create a WebLogic domain with database leasing.
+This sample offers you an option by which you can choose to create a WebLogic domain with no leasing or to create a WebLogic domain with database leasing.
 
 ## Prer-steps Before Run
 1. You need to have a Kubernetes cluster up and running with kubectl installed.
