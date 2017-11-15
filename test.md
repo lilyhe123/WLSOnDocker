@@ -2,7 +2,7 @@ WebLogic Sample on Kubernetes with Shared Domain Home
 =========================================
 This sample extends the Oracle WebLogic developer install image by creating a sample WLS 12.2.1.3 domain and cluster to run in Kubernetes. The WebLogic domain consists of an Admininstrator Server and several Managed Servers running in a WebLogic cluster. All WebLogic servers share the same domain home which has been mapped to an external volume.
 
-This sample offers you an option by which you can choose to create a WebLogic domain with no leasing or to create a WebLogic domain with database leasing. If you want to try service migration based with this domain, you need to choose later.
+This sample offers you an option by which you can choose to create a WebLogic domain with no leasing or to create a WebLogic domain with database leasing. If you want to try service migration with this domain, you need to choose the later.
 
 ## Prer-steps Before Run
 1. You need to have a Kubernetes cluster up and running with kubectl installed.
@@ -32,12 +32,13 @@ If you chhose to create a WebLogic domain with no leasing, the third persistent 
  
 ### 3. Deploy All the Kubernetes Resources
 If you chhose to create the WebLogic domain with no leasing, run the script deploy.sh to deploy all resources to your Kubernetes cluster. 
+
 If you choose to create the WebLogic domain with database leasing, deploy all the resources by running the following commands:
 ```
 $ kubectl create -f  k8s/secrets.yml 
 $ kubectl create -f  k8s/pv.yml 
 $ kubectl create -f  k8s/mysql.yml
-# Create leasing table to MySQL database. Replace $mysqlPod with real pod name of MySQL.
+# Create leasing table to MySQL database after teh MySQL server pod are running.
 $ kubectl exec -it $mysqlPod -- mysql -h localhost -u mysql -pmysql wlsdb < leasing.ddl
 $ kubectl create -f  k8s/pvc.yml
 $ kubectl create -f  k8s/wls-admin.yml
@@ -162,6 +163,7 @@ The admin console URL is 'http://[hostIP]:30007/console'.
 
 ### 6. Troubleshooting
 You can trace output and logs of any pod for troubleshooting.
+
 Trace a pod output. Replace $podName with the actual pod name of WebLogic Server or MySQL server.
 ```
 $ kubectl logs -f $serverPod
@@ -197,6 +199,7 @@ Wait until all pods are running and ready again. Monitor status of pods via `kub
 
 ### 8. Cleanup
 If you choose to create the WebLogic domain with no leasing, run the script clean.sh to remove all resources from your Kubernetes cluster.
+
 If you choose to create the WebLogic domain with database leasing, remove all resources by running the following commands:
 ```
 $ kubectl delete -f k8s/wls-stateful.yml
