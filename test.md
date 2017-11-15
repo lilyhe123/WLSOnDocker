@@ -17,7 +17,7 @@ Pre-steps before build the image:
 
 Then build the image:
 ```
-$ docker build -t wls-installer .
+$ docker build -t wls-k8s-domain .
 ```
 Or you can build the image by running build.sh directly.
 
@@ -27,6 +27,7 @@ Three volumes are defined in k8s/pv.yml which refer to three external directorie
 **NOTE:** The first two persistent volumes 'pv1' and 'pv2' will be used by WebLogic server pods. All processes in WebLogic server pods are running with UID 1000 and GID 1000 by default, so proper permissions need to be set to these two external directories to make sure that UID 1000 or GID 1000 have permission to read and write the volume directories. The third persistent volume 'pv3' is reserved for later use. We assume that root user will be used to access this volume so no particular permission need to be set to the directory.  
  
 ### 3. Deploy All the Kubernetes Resources
+Run the script deploy.sh to deploy all resources to your Kubernetes cluster. You can also deploy the resources indivisually by running the following commands:
 ```
 $ kubectl create -f  k8s/secrets.yml 
 $ kubectl create -f  k8s/pv.yml 
@@ -34,10 +35,10 @@ $ kubectl create -f  k8s/pvc.yml
 $ kubectl create -f  k8s/wls-admin.yml
 $ kubectl create -f  k8s/wls-stateful.yml
 ```
-Or you can deploy all the resources by running deploy.sh directly.
 
 ### 4. Check Resources Deployed to Kubernetes
 #### 4.1 Check Pods and Controllers
+List all pods and controllers:
 ```
 $ kubectl get all
 NAME                               READY     STATUS    RESTARTS   AGE
@@ -63,6 +64,7 @@ rs/admin-server-1238998015   1         1         1         11m
 ```
 
 #### 4.2 Check PV and PVC
+List all pv and pvc:
 ```
 $ kubectl get pv
 NAME      CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM                    STORAGECLASS   REASON    AGE
@@ -78,6 +80,7 @@ wlserver-pvc-2   Bound     pv3       10Gi       RWX           manual         18m
 We have three pv defined and two pvc defined. One pv is reserved for later use.
 
 #### 4.3 Check Secrets
+List all secrets:
 ```
 $ kubectl get secrets
 NAME                  TYPE                                  DATA      AGE
@@ -120,15 +123,15 @@ After the pods are stopped, each pod's corresponding controller is responsible f
 Wait until all pods are running and ready again. Monitor status of pods via `kubectl get pod`.
 
 ### 8. Cleanup
+Run the script clean.sh to remove all resources from your Kubernetes cluster. You can also do the cleanup indivisually by running the following commands:
 ```
 $ kubectl delete -f k8s/wls-stateful.yml
-$ kubectl delete -f k8s/wls-admin.yml
+$ kubectl delete -f k8s/wls-admin.ym
 $ kubectl delete -f k8s/pvc.yml
 $ kubectl delete -f k8s/pv.yml
 $ kubectl delete -f k8s/secrets.yml
 ```
-Or you can cleanup your environment by running clean.sh directly.
-Next clean up all data in volume directories via `rm -rf *`.
+And you need to clean up all data in volume directories via `rm -rf *`.
 
 ## COPYRIGHT 
 Copyright (c) 2014-2017 Oracle and/or its affiliates. All rights reserved.
